@@ -1,0 +1,48 @@
+from random import *
+
+count = 1
+
+while count == 1:
+    numbers = []
+    for i in range(10):
+        random_number = randrange(0, 20)
+        numbers.append(random_number)
+
+    print("Danh sach la:", end=" ")
+    print(*numbers, sep=", ")
+    print()
+
+    require = 1
+
+    while require == 1:
+        try:
+            number_check = int(input("cho tui 1 so? "))
+            require = 0
+        except ValueError:
+            print("Xin hay gui 1 so!!!")
+            print()
+            require = 1
+
+            ##    with count() function:     numbers.count(number_check))
+
+    appears = 0
+
+    for i in range(len(numbers)):
+        if numbers[i] == number_check:
+            appears += 1
+        else:
+            continue
+
+    print("{0} xuat hien {1} o danh sach.".format(number_check, appears))
+    print()
+
+    again = input("Ban co chac ko?(co/ko) ").lower()
+    while again != "n" and again != "y":
+        again = input("xin ban tra loi !(co/ko) ").lower()
+        print()
+
+    if again == "n":
+        count = 0
+        print()
+        print("Chao ban!!!")
+    print()
