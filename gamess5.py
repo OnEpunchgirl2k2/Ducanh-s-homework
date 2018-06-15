@@ -54,17 +54,63 @@ def createBox():
         print()
 
 def isWin():
+    win = True
     for box in boxes:
         if box not in destination:
-            return False
-        else:
-            return True
+            win = False
+    return win
+
+def resolvePlayerMove(dx, dy):
+    if 0 <= player['x'] + dx <map["size_x"] \
+        and 0 <= player['y'] + dy < map["size_y"]:
+        
+        new_positionX_player = player["x"] + dx
+        new_positionY_player = player["y"] + dy
+        lengthBoxes = len(boxes)
+        i = 0
+        for box in boxes:
+            i += 1
+            vitural_boxes = boxes[:]
+            if box["x"] == new_positionX_player \
+                and box["y"] == new_positionY_player:
+                new_positionX_box = box["x"] + dx
+                new_positionY_box = box["y"] + dy
+                if 0 <= new_positionX_box < map["size_x"] \
+                    and 0 <= new_positionY_box < map["size_y"]:
+                    vitural_boxes.remove(box)
+                    lengthVituralBoxes = len(vitural_boxes)
+                    j = 0
+                    for vitural_box in vitural_boxes:
+                        j += 1
+                        if vitural_box["x"] == new_positionX_box \
+                            and vitural_box['y'] == new_positionY_box:
+                            print("duplicate position box")
+                        else:
+                            # box can move, player can move
+                            if j == lengthVituralBoxes:
+                                print("box can move, player can move")
+                                box["x"] += dx
+                                box["y"] += dy
+                                player["x"] = new_positionX_player
+                                player["y"] = new_positionY_player
+                                
+                else:
+                    # player can't push box outside the wall
+                    break
+            else:
+                # player don't match any position box
+                if i == (lengthBoxes):
+                    print("player don't match any position box")
+                    player["x"] = new_positionX_player
+                    player["y"] = new_positionY_player
+                
 
 
 def gameRule():
     while True:     
         createBox()  
-        if isWin():
+        win = isWin()
+        if win:
             print("GG")
             break
         move = input("your move: ").upper()
@@ -85,35 +131,10 @@ def gameRule():
             print("ezzzzz")
             break
 
-        if 0 <= player['x'] + dx <map["size_x"] \
-            and 0 <= player['y'] + dy < map["size_y"]:
-           
-            new_positionX_player = player["x"] + dx
-            new_positionY_player = player["y"] + dy
-            lengthBoxes = len(boxes)
-            for i in range(lengthBoxes):
-                if boxes[i]["x"] == new_positionX_player\
-                    and boxes[i]["y"] == new_positionY_player:
-                        new_boxes = boxes[:]
-                        if boxes[i]["x"] + dx < map["size_x"] \
-                            and boxes[i]["y"] + dy < map["size_y"]:
-                            new_boxes.remove(boxes[i])
-                            for j in range(len(new_boxes)):
-                                if new_boxes[j]["x"] != boxes[i]["x"] + dx \
-                                    or new_boxes[j]["y"] != boxes[i]["y"] + dy \
-                                    and j == (len(new_boxes) - 1):
-                                    boxes[i]["x"] += dx
-                                    boxes[i]["y"] += dy
-                                    player['x'] += dx
-                                    player['y'] += dy
-                                   
-                                    break  
-                else:
-                    # player don't match position box
-                    if i == (lengthBoxes - 1):
-                        player["x"] += dx
-                        player["y"] += dy  
-        if isWin() :
+        resolvePlayerMove(dx, dy)
+          
+        win = isWin()
+        if win:
             print("GG")
             break
 
